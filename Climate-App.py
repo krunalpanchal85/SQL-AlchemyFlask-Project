@@ -38,8 +38,9 @@ def welcome():
         f"/api/v1.0/precipitation<br/>"
         f"/api/v1.0/stations<br/>"
         f"/api/v1.0/tobs<br/>"
-        f"/api/v1.0/<start><br/>"
-        f"/api/v1.0/<start>`and`/api/v1.0/<end>"
+        f"<a href='/api/v1.0/2017-01-01'>/api/v1.0/2017-01-01</a><br></p>"
+        f"<a href='/api/v1.0/2017-01-01/2017-01-07'>/api/v1.0/2017-01-01/2017-01-07</a></p>"
+    
     )
 
 @app.route("/api/v1.0/precipitation")
@@ -83,10 +84,10 @@ def TOBS():
     return jsonify(all_TOBS)
 
 @app.route("/api/v1.0/<start>")
-def DTOBS():
+def DTOBS(start):
     """Return a list of dates and TOBS"""
     # Query all passengers
-    start= (Measurement.date >= '2016-08-23')
+    
     DTBOS = session.query(Measurement.date, func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)).\
         filter(Measurement.date >= start).group_by(Measurement.date).all() 
 
@@ -95,12 +96,11 @@ def DTOBS():
 
     return jsonify(all_DTOBS)
 
-@app.route("/api/v1.0/<start>")
-def SETOBS():
+@app.route("/api/v1.0/<start>/<end>")
+def SETOBS(start, end):
     """Return a list of dates and TOBS"""
     # Query all passengers
-    start= Measurement.date >= '2016-08-23'
-    end = Measurement.date <= '2017-08-23'
+
     SETBOS = session.query(Measurement.date, func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)).\
         filter(Measurement.date >= start).filter(Measurement.date <= end).group_by(Measurement.date).all() 
 
