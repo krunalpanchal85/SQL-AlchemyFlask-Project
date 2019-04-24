@@ -23,7 +23,7 @@ Measurement = Base.classes.measurement
 Station = Base.classes.station
 
 # Create our session (link) from Python to the DB
-session = Session(engine)
+
 
 #################################################
 # Flask Setup
@@ -46,6 +46,7 @@ def welcome():
 @app.route("/api/v1.0/precipitation")
 def PRCP():
     """Return a list of all station and its precipitation"""
+    session = Session(engine)
     # Query all passengers
     results = session.query(Measurement.date,Measurement.prcp).\
         group_by(Measurement.date).order_by(func.sum(Measurement.prcp).desc()).all()
@@ -63,6 +64,7 @@ def PRCP():
 @app.route("/api/v1.0/stations")
 def stations():
     """Return a list of Stations"""
+    session = Session(engine)
     # Query all Stations
     stations = session.query(Station.station).all()
 
@@ -74,6 +76,7 @@ def stations():
 @app.route("/api/v1.0/tobs")
 def TOBS():
     """Return a list of dates and TOBS"""
+    session = Session(engine)
     # Query all passengers
 
     TOBS = session.query(Measurement.date,Measurement.tobs).filter(Measurement.date >= '2010-08-23').all()
@@ -86,6 +89,7 @@ def TOBS():
 @app.route("/api/v1.0/<start>")
 def DTOBS(start):
     """Return a list of dates and TOBS"""
+    session = Session(engine)
     # Query all passengers
     
     DTBOS = session.query(Measurement.date, func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)).\
@@ -99,6 +103,7 @@ def DTOBS(start):
 @app.route("/api/v1.0/<start>/<end>")
 def SETOBS(start, end):
     """Return a list of dates and TOBS"""
+    session = Session(engine)
     # Query all passengers
 
     SETBOS = session.query(Measurement.date, func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)).\
